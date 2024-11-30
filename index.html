@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polyalphabetic Cipher</title>
+    <style>
+        /* Body styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        /* Main container */
+        .container {
+            background: #000; /* Black inner container */
+            padding: 20px 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        /* Heading styling */
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #00f2fe; /* Light blue heading */
+        }
+
+        /* Input field styling */
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        /* Input focus effect */
+        input[type="text"]:focus {
+            border-color: #00f2fe;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 242, 254, 0.5);
+        }
+
+        /* Button styling */
+        button {
+            background-color: #0077b6;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #023e8a;
+        }
+
+        /* Result styling */
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #00f2fe; /* Light blue result text */
+        }
+
+        /* Footer styling */
+        footer {
+            margin-top: 20px;
+            font-size: 14px;
+            background: black; /* Black footer */
+            color: white; /* White text for contrast */
+            padding: 10px 0;
+            text-align: center;
+            border-radius: 8px; /* Rounded corners */
+            width: 100%;
+        }
+
+        footer a {
+            color: #00f2fe; /* Light blue link */
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Polyalphabetic Cipher (Vigenère)</h1>
+        <input type="text" id="plaintext" placeholder="Enter your plaintext">
+        <input type="text" id="key" placeholder="Enter your key (letters only)">
+        <div>
+            <button onclick="encrypt()">Encrypt</button>
+            <button onclick="decrypt()">Decrypt</button>
+        </div>
+        <div id="result"></div>
+    </div>
+    <footer>
+        <p>Designed with ❤️ by <a href="#">Smith Bahati</a></p>
+    </footer>
+
+    <script>
+        /* Function to process text using Vigenère cipher */
+        function processText(text, key, isEncrypting) {
+            const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            text = text.toUpperCase();
+            key = key.toUpperCase();
+
+            if (!/^[A-Z]+$/.test(key)) {
+                alert("Key must contain only letters.");
+                return null;
+            }
+
+            let result = "";
+            let keyIndex = 0;
+
+            for (let char of text) {
+                if (alphabet.includes(char)) {
+                    const textIndex = alphabet.indexOf(char);
+                    const keyCharIndex = alphabet.indexOf(key[keyIndex % key.length]);
+                    
+                    let newIndex;
+                    if (isEncrypting) {
+                        newIndex = (textIndex + keyCharIndex) % 26; // Encryption formula
+                    } else {
+                        newIndex = (textIndex - keyCharIndex + 26) % 26; // Decryption formula
+                    }
+
+                    result += alphabet[newIndex];
+                    keyIndex++;
+                } else {
+                    result += char; // Retain non-alphabetic characters
+                }
+            }
+            return result;
+        }
+
+        /* Encrypt function */
+        function encrypt() {
+            const plaintext = document.getElementById("plaintext").value;
+            const key = document.getElementById("key").value;
+
+            const encryptedText = processText(plaintext, key, true);
+            if (encryptedText !== null) {
+                document.getElementById("result").innerText = "Encrypted Text: " + encryptedText;
+            }
+        }
+
+        /* Decrypt function */
+        function decrypt() {
+            const ciphertext = document.getElementById("plaintext").value;
+            const key = document.getElementById("key").value;
+
+            const decryptedText = processText(ciphertext, key, false);
+            if (decryptedText !== null) {
+                document.getElementById("result").innerText = "Decrypted Text: " + decryptedText;
+            }
+        }
+    </script>
+</body>
+</html>
